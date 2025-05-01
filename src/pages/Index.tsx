@@ -1,13 +1,22 @@
-
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { toast } from "sonner";
-import { fetchHtml, generateSelector, SelectorInfo } from '@/services/cheerioService';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { toast } from 'sonner';
+import {
+  fetchHtml,
+  generateSelector,
+  SelectorInfo,
+} from '@/services/cheerioService';
 import HtmlViewer from '@/components/HtmlViewer';
 import ElementSelector from '@/components/ElementSelector';
 
@@ -21,23 +30,25 @@ const Index = () => {
 
   const handleFetchHtml = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!url.trim()) {
-      toast.error("Please enter a valid URL");
+      toast.error('Please enter a valid URL');
       return;
     }
-    
+
     setIsLoading(true);
     setSelectorInfo(null);
-    
+
     try {
       const fetchedHtml = await fetchHtml(url);
       setHtml(fetchedHtml);
-      toast.success("HTML fetched successfully");
+      toast.success('HTML fetched successfully');
       setActiveTab('html');
     } catch (error) {
       console.error('Error:', error);
-      toast.error(error instanceof Error ? error.message : "Failed to fetch HTML");
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to fetch HTML'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -45,19 +56,19 @@ const Index = () => {
 
   const handleGenerateSelector = (selector: string) => {
     setIsGenerating(true);
-    
+
     try {
       const result = generateSelector(html, selector);
       if (result) {
         setSelectorInfo(result);
         setActiveTab('selector');
-        toast.success("Selector generated successfully");
+        toast.success('Selector generated successfully');
       } else {
-        toast.error("No elements found matching this selector");
+        toast.error('No elements found matching this selector');
       }
     } catch (error) {
       console.error('Error:', error);
-      toast.error("Failed to generate selector");
+      toast.error('Failed to generate selector');
     } finally {
       setIsGenerating(false);
     }
@@ -65,12 +76,16 @@ const Index = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">HTML Context Explorer</h1>
-      
+      <h1 className="text-3xl font-bold mb-6 text-center">
+        HTML Context Explorer
+      </h1>
+
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>URL Input</CardTitle>
-          <CardDescription>Enter a website URL to fetch its HTML content</CardDescription>
+          <CardDescription>
+            Enter a website URL to fetch its HTML content
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleFetchHtml} className="space-y-4">
@@ -87,7 +102,9 @@ const Index = () => {
                 <Button type="submit" disabled={isLoading || !url.trim()}>
                   {isLoading ? (
                     <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2"></div>
-                  ) : "Fetch HTML"}
+                  ) : (
+                    'Fetch HTML'
+                  )}
                 </Button>
               </div>
             </div>
@@ -105,8 +122,8 @@ const Index = () => {
             <HtmlViewer html={html} isLoading={isLoading} />
           </TabsContent>
           <TabsContent value="selector" className="mt-4">
-            <ElementSelector 
-              html={html} 
+            <ElementSelector
+              html={html}
               onSelect={handleGenerateSelector}
               selectorInfo={selectorInfo}
               isGenerating={isGenerating}
@@ -118,14 +135,17 @@ const Index = () => {
       {!html && !isLoading && (
         <Alert>
           <AlertDescription>
-            Enter a URL above and click "Fetch HTML" to get started. Once HTML is loaded,
-            you'll be able to use the Element Selector tool to generate context-aware CSS selectors.
+            Enter a URL above and click "Fetch HTML" to get started. Once HTML
+            is loaded, you'll be able to use the Element Selector tool to
+            generate context-aware CSS selectors.
           </AlertDescription>
         </Alert>
       )}
-      
+
       <footer className="text-center text-sm text-muted-foreground mt-8">
-        <p>HTML Context Explorer - Built with React, Cheerio, and Tailwind CSS</p>
+        <p>
+          HTML Context Explorer - Built with React, Cheerio, and Tailwind CSS
+        </p>
       </footer>
     </div>
   );
