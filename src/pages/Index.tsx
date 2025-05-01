@@ -162,9 +162,12 @@ const Index = () => {
         </Alert>
       )}
 
-      <footer className="text-center text-sm text-muted-foreground mt-8">
+      <footer className="text-center text-xs text-muted-foreground mt-8">
         <p>
-          HTML Context Explorer - Built with React, Cheerio, and Tailwind CSS
+          Made with ❤️ (and frustration){' '}
+          <span className="underline">
+            <a href="https://github.com/404mat">by Mathias</a>
+          </span>
         </p>
       </footer>
     </div>
