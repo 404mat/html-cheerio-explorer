@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -27,6 +27,8 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectorInfo, setSelectorInfo] = useState<SelectorInfo | null>(null);
   const [activeTab, setActiveTab] = useState('html');
+  const [htmlViewerFilters, setHtmlViewerFilters] = useState<string[]>([]);
+  const [elementSelectorInput, setElementSelectorInput] = useState('');
 
   const handleFetchHtml = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,25 +56,36 @@ const Index = () => {
     }
   };
 
-  const handleGenerateSelector = (selector: string) => {
-    setIsGenerating(true);
+  const handleGenerateSelector = useCallback(
+    (selector: string) => {
+      setIsGenerating(true);
 
-    try {
-      const result = generateSelector(html, selector);
-      if (result) {
-        setSelectorInfo(result);
-        setActiveTab('selector');
-        toast.success('Selector generated successfully');
-      } else {
-        toast.error('No elements found matching this selector');
+      try {
+        const result = generateSelector(html, selector);
+        if (result) {
+          setSelectorInfo(result);
+          setActiveTab('selector');
+          toast.success('Selector generated successfully');
+        } else {
+          toast.error('No elements found matching this selector');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('Failed to generate selector');
+      } finally {
+        setIsGenerating(false);
       }
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to generate selector');
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+    },
+    [html]
+  );
+
+  const handleElementSelectorInputChange = useCallback((value: string) => {
+    setElementSelectorInput(value);
+  }, []);
+
+  const handleHtmlViewerFilterChange = useCallback((value: string[]) => {
+    setHtmlViewerFilters(value);
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -119,7 +132,12 @@ const Index = () => {
             <TabsTrigger value="selector">Element Selector</TabsTrigger>
           </TabsList>
           <TabsContent value="html" className="mt-4">
-            <HtmlViewer html={html} isLoading={isLoading} />
+            <HtmlViewer
+              html={html}
+              isLoading={isLoading}
+              filters={htmlViewerFilters}
+              onFiltersChange={handleHtmlViewerFilterChange}
+            />
           </TabsContent>
           <TabsContent value="selector" className="mt-4">
             <ElementSelector
@@ -127,6 +145,8 @@ const Index = () => {
               onSelect={handleGenerateSelector}
               selectorInfo={selectorInfo}
               isGenerating={isGenerating}
+              selector={elementSelectorInput}
+              onSelectorChange={handleElementSelectorInputChange}
             />
           </TabsContent>
         </Tabs>

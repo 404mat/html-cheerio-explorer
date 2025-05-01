@@ -7,10 +7,16 @@ import { Code, FileCode, FileJson } from 'lucide-react';
 interface HtmlViewerProps {
   html: string;
   isLoading: boolean;
+  filters: string[];
+  onFiltersChange: (value: string[]) => void;
 }
 
-const HtmlViewer: React.FC<HtmlViewerProps> = ({ html, isLoading }) => {
-  const [filters, setFilters] = useState<string[]>([]);
+const HtmlViewer: React.FC<HtmlViewerProps> = ({
+  html,
+  isLoading,
+  filters,
+  onFiltersChange,
+}) => {
   const [displayedHtml, setDisplayedHtml] = useState<string>(html);
 
   useEffect(() => {
@@ -51,7 +57,7 @@ const HtmlViewer: React.FC<HtmlViewerProps> = ({ html, isLoading }) => {
             <ToggleGroup
               type="multiple"
               value={filters}
-              onValueChange={(value) => setFilters(value)}
+              onValueChange={onFiltersChange}
               className="justify-end"
             >
               <ToggleGroupItem value="head" aria-label="Hide head content">

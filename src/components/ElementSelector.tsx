@@ -20,6 +20,8 @@ interface ElementSelectorProps {
   onSelect: (selector: string) => void;
   selectorInfo: SelectorInfo | null;
   isGenerating: boolean;
+  selector: string;
+  onSelectorChange: (value: string) => void;
 }
 
 const ElementSelector: React.FC<ElementSelectorProps> = ({
@@ -27,9 +29,9 @@ const ElementSelector: React.FC<ElementSelectorProps> = ({
   onSelect,
   selectorInfo,
   isGenerating,
+  selector,
+  onSelectorChange,
 }) => {
-  const [selector, setSelector] = useState('');
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selector.trim()) {
@@ -58,7 +60,7 @@ const ElementSelector: React.FC<ElementSelectorProps> = ({
                 id="selector"
                 placeholder="Enter a CSS selector (e.g., #main-content, .header, div.container)"
                 value={selector}
-                onChange={(e) => setSelector(e.target.value)}
+                onChange={(e) => onSelectorChange(e.target.value)}
                 disabled={!html || isGenerating}
               />
               <Button
