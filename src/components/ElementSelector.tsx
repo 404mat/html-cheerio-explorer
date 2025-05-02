@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -112,26 +106,6 @@ const ElementSelector: React.FC<ElementSelectorProps> = ({
               <Badge variant="outline" className="font-mono">
                 {selectorInfo.element}
               </Badge>
-            </div>
-
-            <div>
-              <Label className="block mb-1">JavaScript One-liner</Label>
-              <div className="flex items-center gap-2">
-                <code className="bg-muted p-2 text-xs rounded block w-full whitespace-pre-wrap break-all">
-                  {`document.querySelector("${selectorInfo.path.replace(/"/g, '\\"')}")`}
-                </code>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    copyToClipboard(
-                      `document.querySelector("${selectorInfo.path.replace(/"/g, '\\"')}")`
-                    )
-                  }
-                >
-                  Copy
-                </Button>
-              </div>
             </div>
 
             {Object.keys(selectorInfo.attributes).length > 0 && (
