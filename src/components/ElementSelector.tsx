@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import { SelectorInfo } from '@/services/cheerioService';
 
@@ -118,6 +119,19 @@ const ElementSelector: React.FC<ElementSelectorProps> = ({
                 />
               </div>
             )}
+
+            {/* HTML snippet */}
+            <div>
+              <Label className="block mb-1">Selected Element HTML</Label>
+              <ScrollArea className="h-[450px] w-full border rounded-md">
+                {' '}
+                <div className="p-2">
+                  <pre className="text-xs font-mono whitespace-pre-wrap break-words">
+                    {selectorInfo.htmlSnippet}
+                  </pre>
+                </div>
+              </ScrollArea>
+            </div>
           </div>
         )}
       </CardContent>

@@ -4,6 +4,7 @@ export interface SelectorInfo {
   path: string;
   element: string;
   attributes: Record<string, string>;
+  htmlSnippet: string;
 }
 
 export const generateSelector = (
@@ -72,10 +73,14 @@ export const generateSelector = (
       });
     }
 
+    // Get the outer HTML of the element
+    const htmlSnippet = $.html(el) || '';
+
     return {
       path: path.join(' > '),
       element: tagName,
       attributes,
+      htmlSnippet,
     };
   } catch (error) {
     console.error('Error generating selector:', error);
