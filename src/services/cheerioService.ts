@@ -1,5 +1,7 @@
 import * as cheerio from 'cheerio';
 
+const CORS_PROXY_URL = 'https://api.allorigins.win/get?url=';
+
 export interface SelectorInfo {
   path: string;
   element: string;
@@ -96,15 +98,39 @@ export const fetchHtml = async (url: string): Promise<string> => {
       processedUrl = 'https://' + url;
     }
 
+    // Use the configurable CORS proxy
     const response = await fetch(
-      `https://api.allorigins.win/get?url=${encodeURIComponent(processedUrl)}`
+      `${CORS_PROXY_URL}${encodeURIComponent(processedUrl)}`
     );
-    const data = await response.json();
-    return data.contents;
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('content-type');
+
+    if (contentType && contentType.includes('application/json')) {
+      // Assume it's a JSON response from the proxy
+      const data = await response.json();
+      if (data && typeof data.contents === 'string') {
+        return data.contents;
+      } else {
+        // If the JSON doesn't have 'contents', it might be an error from the proxy or a different JSON structure
+        console.error('Unexpected JSON response from proxy:', data);
+        throw new Error('Unexpected response format from CORS proxy.');
+      }
+    } else {
+      // This case might occur if the proxy itself returns non-JSON or an error page
+      console.error(
+        'Unexpected non-JSON response from proxy. Content-Type:',
+        contentType
+      );
+      throw new Error('Unexpected response from CORS proxy.');
+    }
   } catch (error) {
     console.error('Error fetching HTML:', error);
     throw new Error(
-      'Failed to fetch HTML. Please check the URL and try again.'
+      `Failed to fetch HTML: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
   }
 };
