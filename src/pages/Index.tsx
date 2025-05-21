@@ -10,6 +10,17 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import {
@@ -29,6 +40,9 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState('html');
   const [htmlViewerFilters, setHtmlViewerFilters] = useState<string[]>([]);
   const [elementSelectorInput, setElementSelectorInput] = useState('');
+
+  const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
+  const [pastedHtml, setPastedHtml] = useState('');
 
   const handleFetchHtml = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,6 +133,47 @@ const Index = () => {
                     'Fetch HTML'
                   )}
                 </Button>
+                <Dialog
+                  open={isPasteModalOpen}
+                  onOpenChange={setIsPasteModalOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="outline">Paste HTML</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Paste HTML</DialogTitle>
+                      <DialogDescription>
+                        Paste your HTML content below.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <Textarea
+                        placeholder="Paste your HTML here..."
+                        value={pastedHtml}
+                        onChange={(e) => setPastedHtml(e.target.value)}
+                        rows={10}
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        onClick={() => {
+                          setHtml(pastedHtml);
+                          setIsPasteModalOpen(false);
+                          setPastedHtml('');
+                          toast.success('HTML pasted successfully');
+                          setActiveTab('html');
+                        }}
+                        disabled={!pastedHtml.trim()}
+                      >
+                        Load HTML
+                      </Button>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </form>
